@@ -11,6 +11,8 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Admin;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +24,24 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/projects', [ProjectsController::class, 'index'])->name('projects');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+
+// TEMP route to create admin in production; remove after first use
+Route::get('/create-admin-once', function () {
+    if (! app()->environment('production')) {
+        abort(404);
+    }
+
+    $admin = Admin::updateOrCreate(
+        ['email' => 'carljaycocamas26@gmail.com'],
+        [
+            'name' => 'Carl Jay Cocamas',
+            'password' => Hash::make('Admin@1234'),
+            'is_super_admin' => 1,
+        ]
+    );
+
+    return 'Admin created/updated for '.$admin->email;
+});
 
 // Alias used by Laravel's auth redirection
 Route::get('/login', function () {
