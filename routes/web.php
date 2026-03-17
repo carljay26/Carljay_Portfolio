@@ -13,6 +13,7 @@ use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Admin;
+use App\Models\SkillCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,36 @@ Route::get('/create-admin-once', function () {
     );
 
     return 'Admin created/updated for '.$admin->email;
+});
+
+// TEMP route to seed default skill categories in production
+Route::get('/seed-skill-categories-once', function () {
+    if (! app()->environment('production')) {
+        abort(404);
+    }
+
+    $defaults = [
+        ['name' => 'Frontend',        'sort_order' => 1],
+        ['name' => 'Backend',         'sort_order' => 2],
+        ['name' => 'Full-stack',      'sort_order' => 3],
+        ['name' => 'Mobile',          'sort_order' => 4],
+        ['name' => 'DevOps & Cloud',  'sort_order' => 5],
+        ['name' => 'Databases',       'sort_order' => 6],
+        ['name' => 'Testing & QA',    'sort_order' => 7],
+        ['name' => 'UI/UX & Design',  'sort_order' => 8],
+        ['name' => 'Tools & Workflow','sort_order' => 9],
+        ['name' => 'Soft Skills',     'sort_order' => 10],
+        ['name' => 'Other',           'sort_order' => 11],
+    ];
+
+    foreach ($defaults as $cat) {
+        SkillCategory::updateOrCreate(
+            ['name' => $cat['name']],
+            ['sort_order' => $cat['sort_order']]
+        );
+    }
+
+    return 'Skill categories seeded.';
 });
 
 // Alias used by Laravel's auth redirection
