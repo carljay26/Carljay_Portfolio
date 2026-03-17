@@ -20,6 +20,19 @@
     </style>
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: { primary: '#256af4', 'background-light': '#f5f6f8', 'background-dark': '#101622' },
+                        fontFamily: { display: ['Space Grotesk', 'sans-serif'] },
+                    },
+                },
+            };
+        </script>
     @endif
     @stack('styles')
 </head>
